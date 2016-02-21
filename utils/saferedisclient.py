@@ -6,13 +6,10 @@
 # Build By CCoffee 20140915 1738, caofei@baixing.com
 # Consolidated By CCoffee 20140915, caofei@baixing.com
 
-import os
-import datetime
 import time
-import threading
-# import yaml
 from config import REDIS as _REDIS
 import redis
+
 
 class SafeRedisClient(object):
     REDIS_DB_CONN_POOLS = {}
@@ -64,7 +61,6 @@ class SafeRedisClient(object):
             if 'error_hard_retry_limit' in kwargs else 100
 
         conn_pool_key = (host, port, db)
-        redis_conn_pool = None
         if conn_pool_key in SafeRedisClient.REDIS_DB_CONN_POOLS:
             redis_conn_pool = SafeRedisClient.REDIS_DB_CONN_POOLS[conn_pool_key]
         else:
@@ -88,15 +84,15 @@ class SafeRedisClient(object):
                     raise
                 except (redis.ConnectionError, redis.ResponseError, redis.TimeoutError) as error:
                     error_msg = str(error).lower().strip()
-                    if error_msg.startswith('too many connections'):    # Redis connection pool full (soft error)
+                    if error_msg.startswith('too many connections'):  # Redis connection pool full (soft error)
                         time.sleep(self.error_pool_full_wait_sec)
                     elif error_msg.startswith('max number of clients'):  # Redis server too many clients
                         time.sleep(self.error_server_full_wait_sec)
                         hard_error_retry += 1
-                    elif error_msg.startswith('error 111 '):    # Connection refused, redis is dead, waiting for restart
+                    elif error_msg.startswith('error 111 '):  # Connection refused, redis is dead, waiting for restart
                         time.sleep(self.error_server_port_dead_wait_sec)
                         hard_error_retry += 1
-                    elif error_msg.startswith('error -2 '):     # Host name or service not known
+                    elif error_msg.startswith('error -2 '):  # Host name or service not known
                         time.sleep(self.error_host_unknown_wait_sec)
                         hard_error_retry += 1
                     else:
@@ -106,57 +102,7 @@ class SafeRedisClient(object):
                 if hard_error_retry >= self.error_hard_retry_limit:
                     exec_finish = True  # hard error limit reached, force return None
             return result
+
         return func
 
-redis_manager = SafeRedisClient(_REDIS['HOST'],_REDIS['PORT'],_REDIS['DBID'])
-
-# --- 下列为测试用代码 ---
-
-def do_redis_test_thread(thread_id, redis_index, redis_client):
-    print("Thread {0} {1} started...".format(thread_id, redis_index))
-    for i in range(0, 500):
-        # print("thread id = {0} , redis client id = {1}".format(thread_id, id(redis_client)))
-        rdb_available = False
-        while not rdb_available:
-            redis_client.lpush('test_key_list', 'wahahaha_{0}_{1}_{2}'.format(thread_id, redis_index, i))
-            redis_client.incr('test_key_int', amount=redis_index + 1)
-            rdb_available = True
-    print("Thread {0} {1} finished...".format(thread_id, redis_index))
-    return
-
-
-if __name__ == '__main__':
-
-    start_stamp = "#### Test Start {0} ####".format(datetime.datetime.now())
-    raw_redis_client = redis.StrictRedis()
-    safe_redis_client = SafeRedisClient()
-    raw_redis_clients = [
-        redis.StrictRedis(host='localhost', port=6380, db=0),
-        redis.StrictRedis(host='localhost', port=6381, db=0),
-        redis.StrictRedis(host='localhost', port=6382, db=0)
-    ]
-    safe_redis_clients = [
-        SafeRedisClient(host='localhost', port=6380, db=0),
-        SafeRedisClient(host='localhost', port=6381, db=0),
-        SafeRedisClient(host='localhost', port=6382, db=0)
-    ]
-    threads = []
-    for i in range(0, 50):
-        for redis_index in range(0, 3):
-            thread = threading.Thread(target=do_redis_test_thread,
-                                      args=(i, redis_index, safe_redis_clients[redis_index],))
-            thread.start()
-            threads.append(thread)
-    threads_all_end = False
-    while not threads_all_end:
-        threads_all_end = True
-        for thread in threads:
-            if thread.is_alive():
-                threads_all_end = False
-                break
-        if not threads_all_end:
-            time.sleep(1)
-    end_stamp = "#### Test End {0} ####".format(datetime.datetime.now())
-    print(start_stamp)
-    print(end_stamp)
-    print('OK')
+redis_manager = SafeRedisClient(_REDIS['HOST'], _REDIS['PORT'], _REDIS['DBID'])

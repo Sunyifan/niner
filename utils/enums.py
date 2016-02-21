@@ -1,7 +1,7 @@
 __author__ = 'magus0219'
 
 
-class DeployStrategy():
+class DeployStrategy:
     TEST_MODE = 1
     PRO_MODE = 2
 

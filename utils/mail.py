@@ -114,7 +114,7 @@ rollback_fail_text = """
 """
 
 
-class MailManager():
+class MailManager:
     def __init__(self, smtp, user, password):
         self.smtp = smtp
         self.user = user
@@ -158,7 +158,7 @@ class MailManager():
                                                     cost_time=str(end_time - start_time),
                                                     event_id=payload.event_id,
                                                     tag_str=str(tag)
-                           ),
+                                                    ),
                            mail_to=self.get_developer_emails())
         except Exception as ex:
             logger_server.exception(ex)
@@ -174,19 +174,19 @@ class MailManager():
             cancel_time = datetime.datetime.fromtimestamp(rst['createTimeStamp'])
 
             self.send_mail(subject=cancel_success_title.format(repo_name=payload.repository_name,
-                                                       tag_name=payload.tag),
+                                                               tag_name=payload.tag),
                            text=cancel_success_text.format(payload_pusher=payload.username,
-                                                   payload_src=payload.src,
-                                                   repo_name=payload.repository_name,
-                                                   tag_name=payload.tag,
-                                                   start_time=start_time.strftime("%Y-%m-%d %H:%M:%S"),
-                                                   end_time=end_time.strftime("%Y-%m-%d %H:%M:%S"),
-                                                   cost_time=str(end_time - start_time),
-                                                   event_id=payload.event_id,
-                                                   tag_str=str(tag),
-                                                   cancel_user=cancel_username,
-                                                   cancel_time=cancel_time.strftime("%Y-%m-%d %H:%M:%S")
-                           ),
+                                                           payload_src=payload.src,
+                                                           repo_name=payload.repository_name,
+                                                           tag_name=payload.tag,
+                                                           start_time=start_time.strftime("%Y-%m-%d %H:%M:%S"),
+                                                           end_time=end_time.strftime("%Y-%m-%d %H:%M:%S"),
+                                                           cost_time=str(end_time - start_time),
+                                                           event_id=payload.event_id,
+                                                           tag_str=str(tag),
+                                                           cancel_user=cancel_username,
+                                                           cancel_time=cancel_time.strftime("%Y-%m-%d %H:%M:%S")
+                                                           ),
                            mail_to=self.get_developer_emails())
         except Exception as ex:
             logger_server.exception(ex)
@@ -202,18 +202,18 @@ class MailManager():
             cancel_time = datetime.datetime.fromtimestamp(rst['createTimeStamp'])
 
             self.send_mail(subject=cancel_fail_title.format(repo_name=payload.repository_name,
-                                                       tag_name=payload.tag),
+                                                            tag_name=payload.tag),
                            text=cancel_fail_text.format(payload_pusher=payload.username,
-                                                   payload_src=payload.src,
-                                                   repo_name=payload.repository_name,
-                                                   tag_name=payload.tag,
-                                                   end_time=end_time.strftime("%Y-%m-%d %H:%M:%S"),
-                                                   event_id=payload.event_id,
-                                                   tag_str=str(tag),
-                                                   cancel_user=cancel_username,
-                                                   cancel_time=cancel_time.strftime("%Y-%m-%d %H:%M:%S"),
-                                                   rollback_stack_info=stack_info
-                           ),
+                                                        payload_src=payload.src,
+                                                        repo_name=payload.repository_name,
+                                                        tag_name=payload.tag,
+                                                        end_time=end_time.strftime("%Y-%m-%d %H:%M:%S"),
+                                                        event_id=payload.event_id,
+                                                        tag_str=str(tag),
+                                                        cancel_user=cancel_username,
+                                                        cancel_time=cancel_time.strftime("%Y-%m-%d %H:%M:%S"),
+                                                        rollback_stack_info=stack_info
+                                                        ),
                            mail_to=self.get_developer_emails())
         except Exception as ex:
             logger_server.exception(ex)
@@ -230,7 +230,7 @@ class MailManager():
                                                   event_id=payload.event_id,
                                                   tag_str=str(tag),
                                                   stack_info=stack_info
-                           ),
+                                                  ),
                            mail_to=self.get_developer_emails())
         except Exception as ex:
             logger_server.exception(ex)
@@ -249,7 +249,7 @@ class MailManager():
                                                              event_id=payload.event_id,
                                                              tag_str=str(tag),
                                                              stack_info=stack_info
-                           ),
+                                                             ),
                            mail_to=self.get_developer_emails())
         except Exception as ex:
             logger_server.exception(ex)
@@ -269,7 +269,7 @@ class MailManager():
                                                           tag_str=str(tag),
                                                           stack_info=stack_info,
                                                           rollback_stack_info=rollback_stack_info
-                           ),
+                                                          ),
                            mail_to=self.get_developer_emails())
         except Exception as ex:
             logger_server.exception(ex)
@@ -285,11 +285,5 @@ class MailManager():
 
             return to_list
 
+
 mail_manager = MailManager(EMAIL['SMTP'], EMAIL['USER'], EMAIL['PASSWORD'])
-
-if __name__ == '__main__':
-    text = "TEST"
-    subject = "TEST SUBJECT"
-    mail_manager.send_mail(subject, text, mail_manager.get_developer_emails())
-
-
