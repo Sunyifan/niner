@@ -209,7 +209,8 @@ class DeployManager:
                                                                    'trace': stack_info,
                                                                    'createdTimeStamp': int(time.time())})
                 if self.get_repo_strategy() == DeployStrategy.PRO_MODE:
-                    mail_manager.send_cancel_fail_mail(payload, self.repo.get_tag_info(payload.tag), datetime_end, stack_info)
+                    mail_manager.send_cancel_fail_mail(payload, self.repo.get_tag_info(payload.tag), datetime_end,
+                                                       stack_info)
             else:
                 raise DeployCancel()
 
@@ -367,7 +368,7 @@ class GitBaseDeployManager(DeployManager):
                                                                    'status_snapshot': serialize_status(
                                                                        self.status.export_status())})
                 mail_manager.send_rollback_fail_mail(payload, '', datetime_start,
-                                                        datetime_end, stack_info, rollback_stack_info)
+                                                     datetime_end, stack_info, rollback_stack_info)
 
     def rollback(self, payload):
         try:
@@ -578,7 +579,8 @@ class PackageBaseDeployManager(DeployManager):
                                                                'type': 'deploy_cancel',
                                                                'result': 'success',
                                                                'createdTimeStamp': int(time.time())})
-            mail_manager.send_cancel_success_mail(payload, self.repo.get_tag_info(payload.tag), datetime_start, datetime_end)
+            mail_manager.send_cancel_success_mail(payload, self.repo.get_tag_info(payload.tag), datetime_start,
+                                                  datetime_end)
 
         except Exception as ex:
             exception_str = str(ex)
@@ -622,8 +624,7 @@ class PackageBaseDeployManager(DeployManager):
                                                                    'status_snapshot': serialize_status(
                                                                        self.status.export_status())})
                 mail_manager.send_rollback_fail_mail(payload, self.repo.get_tag_info(payload.tag), datetime_start,
-                                                        datetime_end, stack_info, rollback_stack_info)
-
+                                                     datetime_end, stack_info, rollback_stack_info)
 
     def rollback(self, payload):
         try:
@@ -717,7 +718,7 @@ class PackageBaseDeployManager(DeployManager):
             raise ex
 
 
-class DeployManagerFactory():
+class DeployManagerFactory:
     @staticmethod
     def create_deploy_manager(repo_name, repo_config):
         if repo_config['STRATEGY'] == DeployStrategy.TEST_MODE:

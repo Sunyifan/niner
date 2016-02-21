@@ -563,7 +563,6 @@ class Repository:
 
         return
 
-
     def get_commits_range(self, pull_content):
         """Analyze commit range from output of git pull
 
