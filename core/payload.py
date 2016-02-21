@@ -2,7 +2,7 @@ __author__ = 'magus0219'
 import uuid
 
 
-class PayLoad():
+class PayLoad:
     def __init__(self, event_id, event_type, repository_name, is_tag, is_branch, head_commit, username, src,
                  branch=None, tag=None):
         self.event_id = event_id

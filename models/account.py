@@ -4,7 +4,7 @@ from utils.mongo_handler import mongodb_client
 from bson.objectid import ObjectId
 
 
-class Account():
+class Account:
     def __init__(self, username, password, email, role, user_id=None):
         self.user_id = user_id  # string
         self.username = username

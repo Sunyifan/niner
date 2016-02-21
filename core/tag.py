@@ -13,7 +13,7 @@ str_text = """
 """
 
 
-class Tag():
+class Tag:
     def __init__(self, name, author, email, commit_id, desc, tag_time):
         self.name = name
         self.author = author

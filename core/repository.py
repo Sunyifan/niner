@@ -35,7 +35,7 @@ class RepositoryException(Exception):
         return self.msg
 
 
-class Repository():
+class Repository:
     def __init__(self, repo_name, repo_config):
         """Initialize this repository
 
